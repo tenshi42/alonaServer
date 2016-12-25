@@ -1,11 +1,11 @@
-var WebSocketServer = require("ws").Server;
+let WebSocketServer = require("ws").Server;
 const express = require('express');
 const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
 
-var server = express()
+let server = express()
         .use(function(req, res){
             res.sendFile(INDEX)
         });
@@ -13,10 +13,10 @@ var server = express()
 server.set('views', path.join(__dirname, 'views'));
 server.set('view engine', 'jade');
 
-var wss = new WebSocketServer({server});
-var id = 0;
-var historique = [];
-var whiteBoardHistorique = [];
+let wss = new WebSocketServer({server});
+let id = 0;
+let historique = [];
+let whiteBoardHistorique = [];
 
 require('cmds.js')();
 
@@ -24,7 +24,7 @@ console.log("Server started...");
 
 function broadcast(data) {
     data1 = JSON.parse(data);
-    var msg = "";
+    let msg = "";
     wss.clients.forEach(function each(client) {
         msg = '{"type":"' + data1.type + '", "id":' + data1.id + ', "who":"' + data1.who + '", "text":"' + data1.text + '", "date":' + Date.now() + '}';
         try {
@@ -41,10 +41,10 @@ function broadcast(data) {
         historique.push(msg);
     else if(data1.type == "wBL")
         whiteBoardHistorique.push(msg);
-};
+}
 
 wss.on('connection', function (ws) {
-    console.log("Browser connected online...")
+    console.log("Browser connected online...");
     ws.send('{"type":"id", "id":' + id + '}');
     ws.send('{"type":"message", "who":"server", "text":"Bienvenu !!!"}');
     sendHistorique(ws);
@@ -52,9 +52,9 @@ wss.on('connection', function (ws) {
     id++;
 
     ws.on("message", function (str) {
-        var msg = JSON.parse(str);
+        let msg = JSON.parse(str);
         treatMessage(str);
-    })
+    });
 
     ws.on("close", function() {
         console.log("Browser gone.")
@@ -62,8 +62,8 @@ wss.on('connection', function (ws) {
 });
 
 function treatMessage(pMsg){
-    var ret = "";
-    var mMsg = JSON.parse(pMsg);
+    let ret = "";
+    let mMsg = JSON.parse(pMsg);
     if(mMsg.type == "message"){
         broadcast(pMsg);
         if(mMsg.text.substring(0,1) == "!"){
