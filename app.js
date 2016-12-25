@@ -5,10 +5,13 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
 
-const server = express()
+var server = express()
         .use(function(req, res){
             res.sendFile(INDEX)
         });
+
+server.set('views', path.join(__dirname, 'views'));
+server.set('view engine', 'jade');
 
 var wss = new WebSocketServer({server});
 var id = 0;
@@ -95,3 +98,5 @@ function sendHistorique(ws){
         function a(b){ws.send(b);}
     );
 }
+
+module.exports = server;
