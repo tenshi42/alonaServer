@@ -10,7 +10,7 @@ const server = express()
             res.sendFile(INDEX)
         });
 
-var wss = new WebSocketServer(server);
+var wss = new WebSocketServer({server});
 var id = 0;
 var historique = [];
 var whiteBoardHistorique = [];
