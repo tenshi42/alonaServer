@@ -5,15 +5,15 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
 
-let server = express()
+let app = express()
         .use(function(req, res){
             res.sendFile(INDEX)
         });
 
-server.set('views', path.join(__dirname, 'views'));
-server.set('view engine', 'jade');
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
-let wss = new WebSocketServer({server});
+let wss = new WebSocketServer({ port: 8085 });
 let id = 0;
 let historique = [];
 let whiteBoardHistorique = [];
@@ -46,7 +46,7 @@ function broadcast(data) {
 wss.on('connection', function (ws) {
     console.log("Browser connected online...");
     ws.send('{"type":"id", "id":' + id + '}');
-    ws.send('{"type":"message", "who":"server", "text":"Bienvenu !!!"}');
+    ws.send('{"type":"message", "who":"app", "text":"Bienvenu !!!"}');
     sendHistorique(ws);
 
     id++;
@@ -84,7 +84,7 @@ function treatMessage(pMsg){
         }
     }
     else if(mMsg.type == "connection"){
-        ret = '{"type":"message", "who":"server", "text":"' + mMsg.who + ' est rentré dans le chat !", "id":-1, "date":' + Date.now() + '}';
+        ret = '{"type":"message", "who":"app", "text":"' + mMsg.who + ' est rentré dans le chat !", "id":-1, "date":' + Date.now() + '}';
         broadcast(ret);
     }
     else if(mMsg.type == "wBL"){
@@ -99,4 +99,4 @@ function sendHistorique(ws){
     );
 }
 
-module.exports = server;
+module.exports = app;
