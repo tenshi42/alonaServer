@@ -6,14 +6,13 @@ const PORT = process.env.PORT || 3000;
 const INDEX = path.join(__dirname, 'index.html');
 
 let app = express()
-        .use(function(req, res){
-            res.sendFile(INDEX)
-        });
+        .use((req, res) =>res.sendFile(INDEX))
+        .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-let wss = new WebSocketServer({ port: PORT });
+let wss = new WebSocketServer({ app });
 let id = 0;
 let historique = [];
 let whiteBoardHistorique = [];
