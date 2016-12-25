@@ -13,14 +13,14 @@ let app = express()
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-let wss = new WebSocketServer({ port: 8085 });
+let wss = new WebSocketServer({ port: PORT });
 let id = 0;
 let historique = [];
 let whiteBoardHistorique = [];
 
 require('cmds.js')();
 
-console.log("Server started...");
+console.log("Server started on port " + PORT);
 
 function broadcast(data) {
     data1 = JSON.parse(data);
